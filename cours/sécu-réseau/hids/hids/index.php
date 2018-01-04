@@ -18,39 +18,59 @@
             </div>
             <ul class="nav navbar-nav">
                 <li><a href="index.php?l=alerte">ALERTE</a></li>
-                <li><a href="index.php?l=actual1">ACTUAL WEBS1</a></li>
+                <li><a href="index.php?l=actual">WEBS</a></li>
             </ul>
         </div>
         </nav>
         <?php
-        if($_GET['l']=="actual1"){
-            $name = "webs1";
+        function actual($name,$ip,$user,$pwd){
+            /*$name = "webs1";
             $ip = "192.168.8.103";
             $user = "billy";
-            $pwd = "billy";
+            $pwd = "billy";*/
 	        $command = escapeshellcmd('sudo -u root nohup /usr/bin/python /var/www/html/hids/python/programme.py '.$name.' '.$ip.' '.$user.' '.$pwd.' &');
 	        passthru($command);
 	        //$output = exec($command);
 	        $output = true;
-	    if($output!=null){
-	    	//echo $output;
-	    }else{
-	    	echo "erreur sur l'actualisation des erreurs.";
-	    }
-        }else if($_GET['l']=="alerte"){
-            if (($handle = fopen('alert/alert.csv', "r")) !== FALSE) {
-                print('<table class="table table-striped"><thead><tr><th>Libelle</th><th>Détails</th><th>Fichier</th></tr></thead><tbody>');
+            if($output!=null){
+                //echo $output;
+            }else{
+                echo "erreur sur l'actualisation des erreurs.";
+            }
+        }
+        if($_GET['l']=="actual"){
+            if (($handle = fopen('webs/webs.csv', "r")) !== FALSE) {
+                print('<table class="table table-striped"><thead><tr><th>Name</th><th>Ip</th><th>User</th><th>Password</th><th>Actualiser</th></tr></thead><tbody>');
                 while (($data = fgetcsv($handle, 0, ";")) !== FALSE) {
                     $num = count($data);
                     echo "<tr>";
-                    for ($c=0; $c < $num; $c++) {
-                        echo '<td>'.$data[$c].'</td>';
-                    }
+                    echo '<td>'.$data[0].'</td>';
+                    echo '<td>'.$data[1].'</td>';
+                    echo '<td>'.$data[2].'</td>';
+                    echo '<td>'.$data[3].'</td>';
+                    echo "<td><a href='index.php?webs=".$data[0]."&ip=".$data[1]."&user=".$data[2]."&pwd=".$data[3]."'>X</a></td>";
                     echo "</tr>";
                 }
                 echo '</tbody></table>';
                 fclose($handle);
             }
+        }else if($_GET['l']=="alerte"){
+            if (($handle = fopen('alert/alert.csv', "r")) !== FALSE) {
+                print('<table class="table table-striped"><thead><tr><th>Libelle</th><th>Détails</th><th>Fichier</th><th>Date</th></tr></thead><tbody>');
+                while (($data = fgetcsv($handle, 0, ",")) !== FALSE) {
+                    $num = count($data);
+                    echo "<tr>";
+                    echo '<td>'.$data[0].'</td>';
+                    echo '<td>'.$data[1].'</td>';
+                    echo '<td>'.$data[2].'</td>';
+                    echo '<td>'.date("d-m-Y",(int)$data[3]).'</td>';
+                    echo "</tr>";
+                }
+                echo '</tbody></table>';
+                fclose($handle);
+            }
+        }else if($_GET['webs']){
+            actual($_GET['webs'],$_GET['ip'],$_GET['user'],$_GET['pwd']);
         }else{
             print('<p>Bienvenue dans l\'assistant de gestion des serveurs commerciaux DayLighter.</p>');
             print('<p>Pour des lendemains meilleurs</p>');	

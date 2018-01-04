@@ -1,6 +1,6 @@
 from create import create;
 from recup import recup;
-# from verif import verif;
+from verif import verif;
 import sys
 
 name = "webs1"
@@ -21,5 +21,5 @@ create(name,conn)
 print('<br>recuperation du fichier')
 recup(name,conn)
 print('<br>verification du fichier')
-# verif("/var/www/html/hids/hashwebs1.txt")
+verif("hashwebs1.txt")
 print('<br>arvidersen')
